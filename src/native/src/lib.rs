@@ -48,7 +48,7 @@ fn create_sound_player(input_filepath: &String) -> SoundPlayer {
     }
 }
 
-///Creates a new thread for sound player.
+///Creates a new thread for sound player and returns its unique id.
 #[unsafe(no_mangle)]
 pub fn spawn_sound_player_thread(c_input_filepath: *const c_char) -> *const c_char {
     env_logger::init();
