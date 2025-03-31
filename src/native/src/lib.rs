@@ -50,7 +50,7 @@ fn create_sound_player(input_filepath: &String) -> SoundPlayer {
 
 ///Creates a new thread for sound player and returns its unique id.
 #[unsafe(no_mangle)]
-pub fn spawn_sound_player_thread(c_input_filepath: *const c_char) -> *const c_char {
+pub extern "C" fn spawn_sound_player_thread(c_input_filepath: *const c_char) -> *const c_char {
     env_logger::init();
 
     let input_filepath = convert_c_char_ptr_to_string(c_input_filepath);
@@ -93,7 +93,7 @@ pub fn spawn_sound_player_thread(c_input_filepath: *const c_char) -> *const c_ch
 
 ///Sends a command to a sound player.
 #[unsafe(no_mangle)]
-pub fn send_command_to_sound_player(c_id: *const c_char, c_command: *const c_char) -> i32 {
+pub extern "C" fn send_command_to_sound_player(c_id: *const c_char, c_command: *const c_char) -> i32 {
     env_logger::init();
 
     let id = convert_c_char_ptr_to_string(c_id);
