@@ -11,3 +11,4 @@ uuid = { version = "1.16.0", features = ["v4"] }
 
 [lib]
 crate-type=["cdylib"]
+name="soundplayer"
