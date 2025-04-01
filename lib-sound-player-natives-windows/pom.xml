@@ -3,17 +3,13 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.github.dabasan</groupId>
+        <artifactId>lib-sound-player</artifactId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
 
-    <groupId>com.github.dabasan</groupId>
-    <artifactId>lib-sound-player</artifactId>
-    <version>1.0-SNAPSHOT</version>
-    <packaging>pom</packaging>
-    <modules>
-        <module>lib-sound-player-natives-linux</module>
-        <module>lib-sound-player-natives</module>
-        <module>lib-sound-player-natives-windows</module>
-        <module>lib-sound-player-natives-macos</module>
-    </modules>
+    <artifactId>lib-sound-player-natives-windows</artifactId>
 
     <properties>
         <maven.compiler.source>21</maven.compiler.source>
@@ -22,11 +18,10 @@
     </properties>
 
     <dependencies>
-        <!-- https://mvnrepository.com/artifact/net.java.dev.jna/jna -->
         <dependency>
-            <groupId>net.java.dev.jna</groupId>
-            <artifactId>jna</artifactId>
-            <version>5.17.0</version>
+            <groupId>com.github.dabasan</groupId>
+            <artifactId>lib-sound-player-natives</artifactId>
+            <version>${parent.version}</version>
         </dependency>
     </dependencies>
 </project>
