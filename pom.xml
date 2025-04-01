@@ -12,7 +12,7 @@
         <module>lib-sound-player-natives-linux</module>
         <module>lib-sound-player-natives</module>
         <module>lib-sound-player-natives-windows</module>
-        <module>lib-sound-player-natives-macos</module>
+        <module>lib-sound-player-core</module>
     </modules>
 
     <properties>
