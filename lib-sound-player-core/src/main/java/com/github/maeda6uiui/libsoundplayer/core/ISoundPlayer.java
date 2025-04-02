@@ -12,5 +12,5 @@ public interface ISoundPlayer extends Library {
 
     String spawn_sound_player_thread(String input_filepath);
 
-    int send_command_to_sound_player(String id, String command);
+    String send_command_to_sound_player(String id, String command);
 }
