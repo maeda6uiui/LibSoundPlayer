@@ -18,7 +18,6 @@ use uuid::Uuid;
 
 thread_local! {
     static PLAYER_COMMAND_SENDERS: RefCell<HashMap<String,Sender<String>>>=RefCell::new(HashMap::new());
-    static PLAYER_THREAD_HANDLERS: RefCell<HashMap<String,JoinHandle<()>>>=RefCell::new(HashMap::new());
 }
 
 static INIT: Once = Once::new();
@@ -63,7 +62,7 @@ pub extern "C" fn spawn_sound_player_thread(c_input_filepath: *const c_char) -> 
     let input_filepath = convert_c_char_ptr_to_string(c_input_filepath);
 
     let (sender, receiver): (Sender<String>, Receiver<String>) = mpsc::channel();
-    let handle = thread::spawn(move || {
+    thread::spawn(move || {
         let player = create_sound_player(&input_filepath);
         loop {
             if let Ok(command) = receiver.try_recv() {
@@ -79,9 +78,6 @@ pub extern "C" fn spawn_sound_player_thread(c_input_filepath: *const c_char) -> 
                     }
                 }
             }
-            if player.sink.empty() {
-                break;
-            }
 
             thread::sleep(Duration::from_millis(100));
         }
@@ -90,9 +86,6 @@ pub extern "C" fn spawn_sound_player_thread(c_input_filepath: *const c_char) -> 
     let id = Uuid::new_v4().to_string();
     PLAYER_COMMAND_SENDERS.with(|m| {
         m.borrow_mut().insert(id.clone(), sender);
-    });
-    PLAYER_THREAD_HANDLERS.with(|m| {
-        m.borrow_mut().insert(id.clone(), handle);
     });
 
     convert_string_to_c_char_ptr(&id)
@@ -109,32 +102,6 @@ pub extern "C" fn send_command_to_sound_player(
     });
 
     let id = convert_c_char_ptr_to_string(c_id);
-
-    //Check if player thread is already finished
-    let mut ret = 0;
-    PLAYER_THREAD_HANDLERS.with(|m| {
-        if let Some(handle) = m.borrow().get(&id) {
-            //Remove sender if it's already finished
-            if handle.is_finished() {
-                PLAYER_COMMAND_SENDERS.with(|mm| {
-                    mm.borrow_mut().remove(&id);
-                });
-                log::info!("Player thread is already finished: {}", &id);
-                ret = 1;
-            }
-        } else {
-            log::error!(
-                "Could not find a player thread for the ID specified: {}",
-                &id
-            );
-            ret = -1;
-        }
-    });
-    if ret != 0 {
-        return ret;
-    }
-
-    //Send command to player thread
     let command = convert_c_char_ptr_to_string(c_command);
     let mut ret = 0;
     PLAYER_COMMAND_SENDERS.with(|m| {
@@ -143,6 +110,12 @@ pub extern "C" fn send_command_to_sound_player(
                 log::error!("{}", e);
                 ret = -1;
             }
+        }else {
+            log::error!(
+                "Could not find a player thread for the ID specified: {}",
+                &id
+            );
+            ret = -1;
         }
     });
 
