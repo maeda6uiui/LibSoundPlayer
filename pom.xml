@@ -21,12 +21,31 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
-    <dependencies>
-        <!-- https://mvnrepository.com/artifact/net.java.dev.jna/jna -->
-        <dependency>
-            <groupId>net.java.dev.jna</groupId>
-            <artifactId>jna</artifactId>
-            <version>5.17.0</version>
-        </dependency>
-    </dependencies>
+    <profiles>
+        <profile>
+            <id>natives-linux-amd64</id>
+            <activation>
+                <os>
+                    <family>unix</family>
+                    <name>linux</name>
+                    <arch>amd64</arch>
+                </os>
+            </activation>
+            <properties>
+                <libsoundplayer.natives>lib-sound-player-natives-linux</libsoundplayer.natives>
+            </properties>
+        </profile>
+        <profile>
+            <id>natives-windows-amd64</id>
+            <activation>
+                <os>
+                    <family>windows</family>
+                    <arch>amd64</arch>
+                </os>
+            </activation>
+            <properties>
+                <libsoundplayer.natives>lib-sound-player-natives-windows</libsoundplayer.natives>
+            </properties>
+        </profile>
+    </profiles>
 </project>

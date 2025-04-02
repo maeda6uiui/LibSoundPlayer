@@ -17,4 +17,22 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
+    <dependencies>
+        <dependency>
+            <groupId>net.java.dev.jna</groupId>
+            <artifactId>jna</artifactId>
+            <version>5.17.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.github.dabasan</groupId>
+            <artifactId>lib-sound-player-natives</artifactId>
+            <version>${parent.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.github.dabasan</groupId>
+            <artifactId>${libsoundplayer.natives}</artifactId>
+            <version>${parent.version}</version>
+        </dependency>
+    </dependencies>
 </project>
