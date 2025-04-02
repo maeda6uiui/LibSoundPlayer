@@ -10,9 +10,14 @@ import java.nio.file.Paths;
  * @author maeda6uiui
  */
 public class Sound {
-    public static final int SUCCESS = 0;
-    public static final int ALREADY_FINISHED = 1;
-    public static final int NOT_FOUND = -1;
+    public enum CommandResponse {
+        SUCCESS,
+        ERROR_NO_PLAYER_FOUND,
+        ERROR_SEND_COMMAND,
+        ERROR_RECEIVE_RESPONSE,
+        RESP_TRUE,
+        RESP_FALSE
+    }
 
     private String playerId;
 
@@ -24,15 +29,34 @@ public class Sound {
         playerId = ISoundPlayer.INSTANCE.spawn_sound_player_thread(filepath);
     }
 
-    public int play() {
-        return ISoundPlayer.INSTANCE.send_command_to_sound_player(playerId, "play");
+    private CommandResponse parseCommandResponse(String resp) {
+        return switch (resp) {
+            case "error_no_player_found" -> CommandResponse.ERROR_NO_PLAYER_FOUND;
+            case "error_send_command" -> CommandResponse.ERROR_SEND_COMMAND;
+            case "error_receive_response" -> CommandResponse.ERROR_RECEIVE_RESPONSE;
+            case "true" -> CommandResponse.RESP_TRUE;
+            case "false" -> CommandResponse.RESP_FALSE;
+            default -> CommandResponse.SUCCESS;
+        };
     }
 
-    public int stop() {
-        return ISoundPlayer.INSTANCE.send_command_to_sound_player(playerId, "stop");
+    public CommandResponse play() {
+        String resp = ISoundPlayer.INSTANCE.send_command_to_sound_player(playerId, "play");
+        return this.parseCommandResponse(resp);
     }
 
-    public int pause() {
-        return ISoundPlayer.INSTANCE.send_command_to_sound_player(playerId, "pause");
+    public CommandResponse stop() {
+        String resp = ISoundPlayer.INSTANCE.send_command_to_sound_player(playerId, "stop");
+        return this.parseCommandResponse(resp);
+    }
+
+    public CommandResponse pause() {
+        String resp = ISoundPlayer.INSTANCE.send_command_to_sound_player(playerId, "pause");
+        return this.parseCommandResponse(resp);
+    }
+
+    public CommandResponse is_finished() {
+        String resp = ISoundPlayer.INSTANCE.send_command_to_sound_player(playerId, "is_finished");
+        return this.parseCommandResponse(resp);
     }
 }
