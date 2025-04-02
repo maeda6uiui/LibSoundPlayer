@@ -125,14 +125,14 @@ pub extern "C" fn send_command_to_sound_player(
         if let Some(sender) = m.borrow().get(&id) {
             if let Err(e) = sender.send(command.clone()) {
                 log::error!("{}", e);
-                ret = "error".to_string();
+                ret = "error_send_command".to_string();
             }
         } else {
             log::error!(
                 "Could not find a player thread for the ID specified: {}",
                 &id
             );
-            ret = "error".to_string();
+            ret = "error_no_player_found".to_string();
         }
     });
 
@@ -144,7 +144,7 @@ pub extern "C" fn send_command_to_sound_player(
                     Ok(resp) => ret = resp,
                     Err(e) => {
                         log::error!("{}", e);
-                        ret = "error".to_string();
+                        ret = "error_receive_response".to_string();
                     }
                 }
             }
