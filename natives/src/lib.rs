@@ -5,7 +5,10 @@ use std::{
     fs::File,
     io::BufReader,
     str::FromStr,
-    sync::mpsc::{self, Receiver, Sender},
+    sync::{
+        Once,
+        mpsc::{self, Receiver, Sender},
+    },
     thread::{self, JoinHandle},
     time::Duration,
 };
@@ -17,6 +20,8 @@ thread_local! {
     static PLAYER_COMMAND_SENDERS: RefCell<HashMap<String,Sender<String>>>=RefCell::new(HashMap::new());
     static PLAYER_THREAD_HANDLERS: RefCell<HashMap<String,JoinHandle<()>>>=RefCell::new(HashMap::new());
 }
+
+static INIT: Once = Once::new();
 
 struct SoundPlayer {
     _stream: OutputStream,
@@ -51,7 +56,9 @@ fn create_sound_player(input_filepath: &String) -> SoundPlayer {
 ///Creates a new thread for sound player and returns its unique id.
 #[unsafe(no_mangle)]
 pub extern "C" fn spawn_sound_player_thread(c_input_filepath: *const c_char) -> *const c_char {
-    env_logger::init();
+    INIT.call_once(|| {
+        env_logger::init();
+    });
 
     let input_filepath = convert_c_char_ptr_to_string(c_input_filepath);
 
@@ -93,8 +100,13 @@ pub extern "C" fn spawn_sound_player_thread(c_input_filepath: *const c_char) -> 
 
 ///Sends a command to a sound player.
 #[unsafe(no_mangle)]
-pub extern "C" fn send_command_to_sound_player(c_id: *const c_char, c_command: *const c_char) -> i32 {
-    env_logger::init();
+pub extern "C" fn send_command_to_sound_player(
+    c_id: *const c_char,
+    c_command: *const c_char,
+) -> i32 {
+    INIT.call_once(|| {
+        env_logger::init();
+    });
 
     let id = convert_c_char_ptr_to_string(c_id);
 
