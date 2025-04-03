@@ -1,7 +1,9 @@
 use std::{
     cell::RefCell,
     collections::{HashMap, HashSet},
+    error::Error,
     ffi::{CStr, CString, c_char},
+    fmt::{self, Display},
     fs::File,
     io::BufReader,
     str::FromStr,
@@ -23,9 +25,78 @@ thread_local! {
 
 static INIT: Once = Once::new();
 
+#[derive(Debug, Clone)]
+struct RuntimeError {
+    msg: String,
+}
+
+impl fmt::Display for RuntimeError {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "{}", &self.msg)
+    }
+}
+
+impl Error for RuntimeError {}
+
 struct SoundPlayer {
     _stream: OutputStream,
     sink: Sink,
+}
+
+impl SoundPlayer {
+    fn play(&self) {
+        self.sink.play();
+    }
+
+    fn stop(&self) {
+        self.sink.stop();
+    }
+
+    fn pause(&self) {
+        self.sink.pause();
+    }
+
+    fn is_finished(&self) -> String {
+        if self.sink.empty() {
+            "true".to_string()
+        } else {
+            "false".to_string()
+        }
+    }
+
+    fn speed(&self) -> String {
+        format!("{}", self.sink.speed())
+    }
+
+    fn set_speed(&self, args: &[&str]) -> Result<(), Box<dyn Error>> {
+        if args.len() != 2 {
+            return Err(RuntimeError {
+                msg: format!("Invalid number of arguments: {}", args.len()),
+            }
+            .into());
+        }
+
+        let v: f32 = args[1].parse()?;
+        self.sink.set_speed(v);
+        Ok(())
+    }
+
+    fn volume(&self) -> String {
+        format!("{}", self.sink.volume())
+    }
+
+    fn set_volume(&self, args: &[&str]) -> Result<(), Box<dyn Error>> {
+        if args.len() != 2 {
+            return Err(RuntimeError {
+                msg: format!("Invalid number of arguments: {}", args.len()),
+            }
+            .into());
+        }
+
+        let v: f32 = args[1].parse()?;
+        self.sink.set_volume(v);
+        Ok(())
+    }
 }
 
 fn convert_c_char_ptr_to_string(v: *const c_char) -> String {
@@ -62,28 +133,49 @@ pub extern "C" fn spawn_sound_player_thread(c_input_filepath: *const c_char) -> 
 
     let input_filepath = convert_c_char_ptr_to_string(c_input_filepath);
 
+    let send_response = |response_sender: &Sender<String>, resp: &String| {
+        if let Err(e) = response_sender.send(resp.to_string()) {
+            log::error!("{}", e);
+        }
+    };
+
     let (command_sender, command_receiver): (Sender<String>, Receiver<String>) = mpsc::channel();
     let (response_sender, response_receiver): (Sender<String>, Receiver<String>) = mpsc::channel();
     thread::spawn(move || {
         let player = create_sound_player(&input_filepath);
         loop {
             if let Ok(command) = command_receiver.try_recv() {
-                match command.as_str() {
+                let args: Vec<&str> = command.split(" ").collect();
+                match args[0] {
                     "stop" => {
-                        player.sink.stop();
+                        player.stop();
                         break;
                     }
-                    "play" => player.sink.play(),
-                    "pause" => player.sink.pause(),
+                    "play" => player.play(),
+                    "pause" => player.pause(),
                     "is_finished" => {
-                        let resp;
-                        if player.sink.empty() {
-                            resp = "true";
-                        } else {
-                            resp = "false";
+                        let resp = player.is_finished();
+                        send_response(&response_sender, &resp);
+                    }
+                    "get_speed" => {
+                        let resp = player.speed();
+                        send_response(&response_sender, &resp);
+                    }
+                    "get_volume" => {
+                        let resp = player.volume();
+                        send_response(&response_sender, &resp);
+                    }
+                    "set_speed" => {
+                        if let Err(e) = player.set_speed(&args) {
+                            log::error!("{}", e);
                         }
-
-                        if let Err(e) = response_sender.send(resp.to_string()) {
+                    }
+                    "set_volume" => {
+                        if args.len() != 2 {
+                            log::error!("Invalid number of arguments: {}", args.len());
+                            continue;
+                        }
+                        if let Err(e) = player.set_volume(&args) {
                             log::error!("{}", e);
                         }
                     }
@@ -135,6 +227,9 @@ pub extern "C" fn send_command_to_sound_player(
             ret = "error_no_player_found".to_string();
         }
     });
+    if ret != "" {
+        return convert_string_to_c_char_ptr(&ret);
+    }
 
     let commands_with_response: HashSet<&str> = vec!["is_finished"].into_iter().collect();
     if commands_with_response.contains(command.as_str()) {
