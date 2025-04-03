@@ -3,7 +3,7 @@ use std::{
     collections::{HashMap, HashSet},
     error::Error,
     ffi::{CStr, CString, c_char},
-    fmt::{self, Display},
+    fmt::{self},
     fs::File,
     io::BufReader,
     str::FromStr,
@@ -11,7 +11,7 @@ use std::{
         Once,
         mpsc::{self, Receiver, Sender},
     },
-    thread::{self, JoinHandle},
+    thread::{self},
     time::Duration,
 };
 
