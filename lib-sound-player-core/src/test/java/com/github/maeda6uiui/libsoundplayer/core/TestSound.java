@@ -14,10 +14,17 @@ public class TestSound {
 
         sound.play();
 
-        try {
-            Thread.sleep(10000);
-        } catch (InterruptedException e) {
-            System.err.println(e);
+        while (true) {
+            if (sound.isFinished()) {
+                break;
+            }
+
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                System.err.println(e);
+                break;
+            }
         }
     }
 }

@@ -10,53 +10,65 @@ import java.nio.file.Paths;
  * @author maeda6uiui
  */
 public class Sound {
-    public enum CommandResponse {
-        SUCCESS,
-        ERROR_NO_PLAYER_FOUND,
-        ERROR_SEND_COMMAND,
-        ERROR_RECEIVE_RESPONSE,
-        RESP_TRUE,
-        RESP_FALSE
-    }
-
     private String playerId;
 
     public Sound(String filepath) throws FileNotFoundException {
         if (!Files.exists(Paths.get(filepath))) {
-            throw new FileNotFoundException();
+            throw new FileNotFoundException(filepath);
         }
 
         playerId = ISoundPlayer.INSTANCE.spawn_sound_player_thread(filepath);
     }
 
-    private CommandResponse parseCommandResponse(String resp) {
-        return switch (resp) {
-            case "error_no_player_found" -> CommandResponse.ERROR_NO_PLAYER_FOUND;
-            case "error_send_command" -> CommandResponse.ERROR_SEND_COMMAND;
-            case "error_receive_response" -> CommandResponse.ERROR_RECEIVE_RESPONSE;
-            case "true" -> CommandResponse.RESP_TRUE;
-            case "false" -> CommandResponse.RESP_FALSE;
-            default -> CommandResponse.SUCCESS;
-        };
+    private void throwExceptionOnError(String resp) {
+        if (resp.startsWith("error_")) {
+            throw new RuntimeException(resp);
+        }
     }
 
-    public CommandResponse play() {
+    public void play() {
         String resp = ISoundPlayer.INSTANCE.send_command_to_sound_player(playerId, "play");
-        return this.parseCommandResponse(resp);
+        this.throwExceptionOnError(resp);
     }
 
-    public CommandResponse stop() {
+    public void stop() {
         String resp = ISoundPlayer.INSTANCE.send_command_to_sound_player(playerId, "stop");
-        return this.parseCommandResponse(resp);
+        this.throwExceptionOnError(resp);
     }
 
-    public CommandResponse pause() {
+    public void pause() {
         String resp = ISoundPlayer.INSTANCE.send_command_to_sound_player(playerId, "pause");
-        return this.parseCommandResponse(resp);
+        this.throwExceptionOnError(resp);
     }
 
-    public CommandResponse is_finished() {
+    public boolean isFinished() {
         String resp = ISoundPlayer.INSTANCE.send_command_to_sound_player(playerId, "is_finished");
-        return this.parseCommandResponse(resp);
+        this.throwExceptionOnError(resp);
+
+        return resp.equals("true");
+    }
+
+    public float getSpeed() {
+        String resp = ISoundPlayer.INSTANCE.send_command_to_sound_player(playerId, "get_speed");
+        this.throwExceptionOnError(resp);
+
+        return Float.parseFloat(resp);
+    }
+
+    public float getVolume() {
+        String resp = ISoundPlayer.INSTANCE.send_command_to_sound_player(playerId, "get_volume");
+        this.throwExceptionOnError(resp);
+
+        return Float.parseFloat(resp);
+    }
+
+    public void setSpeed(float speed) {
+        String resp = ISoundPlayer.INSTANCE.send_command_to_sound_player(playerId, String.format("set_speed %f", speed));
+        this.throwExceptionOnError(resp);
+    }
+
+    public void setVolume(float volume) {
+        String resp = ISoundPlayer.INSTANCE.send_command_to_sound_player(playerId, String.format("set_volume %f", volume));
+        this.throwExceptionOnError(resp);
     }
 }
