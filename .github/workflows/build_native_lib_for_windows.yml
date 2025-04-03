@@ -5,6 +5,9 @@ on:
     tags:
       - "natives-*"
 
+permissions:
+  contents: write
+
 jobs:
   build:
     name: Build native library for Windows
