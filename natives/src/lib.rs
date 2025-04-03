@@ -171,10 +171,6 @@ pub extern "C" fn spawn_sound_player_thread(c_input_filepath: *const c_char) -> 
                         }
                     }
                     "set_volume" => {
-                        if args.len() != 2 {
-                            log::error!("Invalid number of arguments: {}", args.len());
-                            continue;
-                        }
                         if let Err(e) = player.set_volume(&args) {
                             log::error!("{}", e);
                         }
