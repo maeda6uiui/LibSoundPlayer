@@ -1,7 +1,9 @@
 name: Build native library for Windows
 
 on:
-  workflow_dispatch:
+  push:
+    tags:
+      - "natives-*"
 
 jobs:
   build:
@@ -13,8 +15,7 @@ jobs:
       - name: Build native library with cargo
         working-directory: natives
         run: cargo build --release
-      - name: Upload build artifact
-        uses: actions/upload-artifact@v4
+      - name: Publish native library to release
+        uses: softprops/action-gh-release@v2
         with:
-          name: soundplayer.dll
-          path: natives/target/release/soundplayer.dll
+          files: natives/target/release/soundplayer.dll
