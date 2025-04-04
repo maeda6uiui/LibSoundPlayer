@@ -15,6 +15,11 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+      - name: Cache
+        uses: actions/cache@v4
+        with:
+          path: natives/target
+          key: ${{runner.os}}-cargo-${{hashFiles('natives/Cargo.lock')}}
       - name: Install libasound2-dev
         run: sudo apt install libasound2-dev
       - name: Build native library with cargo
