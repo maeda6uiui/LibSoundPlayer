@@ -11,6 +11,7 @@ public class NativeExtractorFactory {
     private static final String NATIVE_EXTRACTOR_CLASS_NAME = "NativeExtractor";
     private static final String WINDOWS_PACKAGE_PATH = "com.github.maeda6uiui.libsoundplayer.natives.windows";
     private static final String LINUX_PACKAGE_PATH = "com.github.maeda6uiui.libsoundplayer.natives.linux";
+    private static final String MACOS_PACKAGE_PATH = "com.github.maeda6uiui.libsoundplayer.natives.macos";
 
     public static INativeExtractor createNativeExtractor(String platform)
             throws ClassNotFoundException, NoSuchMethodException,
@@ -18,6 +19,7 @@ public class NativeExtractorFactory {
         String className = switch (platform) {
             case "windows" -> WINDOWS_PACKAGE_PATH + "." + NATIVE_EXTRACTOR_CLASS_NAME;
             case "linux" -> LINUX_PACKAGE_PATH + "." + NATIVE_EXTRACTOR_CLASS_NAME;
+            case "macos" -> MACOS_PACKAGE_PATH + "." + NATIVE_EXTRACTOR_CLASS_NAME;
             default -> throw new IllegalArgumentException("Unsupported platform: " + platform);
         };
 

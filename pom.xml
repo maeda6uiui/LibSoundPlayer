@@ -13,6 +13,7 @@
         <module>lib-sound-player-natives</module>
         <module>lib-sound-player-natives-windows</module>
         <module>lib-sound-player-core</module>
+        <module>lib-sound-player-natives-macos</module>
     </modules>
 
     <properties>

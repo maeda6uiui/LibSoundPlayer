@@ -21,6 +21,8 @@ public class NativeLoader {
             platform = "windows";
         } else if (Platform.isLinux()) {
             platform = "linux";
+        } else if (Platform.isMac()) {
+            platform = "macos";
         } else {
             throw new RuntimeException("Unsupported platform");
         }
