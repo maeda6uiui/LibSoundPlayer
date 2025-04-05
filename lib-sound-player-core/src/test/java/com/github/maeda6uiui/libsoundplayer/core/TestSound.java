@@ -42,4 +42,12 @@ public class TestSound {
     public void testGetPos() {
         assertEquals(0, sound.getPos());
     }
+
+    @Test
+    public void testCallMethodAfterStop() {
+        sound.stop();
+        assertThrows(RuntimeException.class, () -> {
+            sound.isFinished();
+        });
+    }
 }
