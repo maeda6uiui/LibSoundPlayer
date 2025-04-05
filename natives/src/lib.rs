@@ -98,6 +98,24 @@ impl SoundPlayer {
         self.sink.set_volume(v);
         Ok(())
     }
+
+    fn try_seek(&self,args:&[&str])->Result<(),Box<dyn Error>>{
+        if args.len() != 2 {
+            return Err(RuntimeError {
+                msg: format!("Invalid number of arguments: {}", args.len()),
+            }
+            .into());
+        }
+
+        let v: u64 = args[1].parse()?;
+        self.sink.try_seek(Duration::from_millis(v))?;
+        Ok(())
+    }
+
+    fn get_pos(&self)->String{
+        let d=self.sink.get_pos();
+        format!("{}",d.as_millis())
+    }
 }
 
 fn convert_c_char_ptr_to_string(v: *const c_char) -> String {
