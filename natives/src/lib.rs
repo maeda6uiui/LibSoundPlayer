@@ -65,7 +65,7 @@ impl SoundPlayer {
         }
     }
 
-    fn speed(&self) -> String {
+    fn get_speed(&self) -> String {
         format!("{}", self.sink.speed())
     }
 
@@ -82,7 +82,7 @@ impl SoundPlayer {
         Ok(())
     }
 
-    fn volume(&self) -> String {
+    fn get_volume(&self) -> String {
         format!("{}", self.sink.volume())
     }
 
@@ -177,11 +177,11 @@ pub extern "C" fn spawn_sound_player_thread(c_input_filepath: *const c_char) -> 
                         send_response(&response_sender, &resp);
                     }
                     "get_speed" => {
-                        let resp = player.speed();
+                        let resp = player.get_speed();
                         send_response(&response_sender, &resp);
                     }
                     "get_volume" => {
-                        let resp = player.volume();
+                        let resp = player.get_volume();
                         send_response(&response_sender, &resp);
                     }
                     "set_speed" => {
