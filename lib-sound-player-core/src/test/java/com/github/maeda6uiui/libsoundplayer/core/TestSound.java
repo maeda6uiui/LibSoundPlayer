@@ -25,14 +25,14 @@ public class TestSound {
     }
 
     @Test
-    public void testSetSpeed() {
+    public void testGetSpeed() {
         assertEquals(1.0f, sound.getSpeed());
         sound.setSpeed(1.5f);
         assertEquals(1.5f, sound.getSpeed());
     }
 
     @Test
-    public void testSetVolume() {
+    public void testGetVolume() {
         assertEquals(1.0f, sound.getVolume());
         sound.setVolume(1.5f);
         assertEquals(1.5f, sound.getVolume());
