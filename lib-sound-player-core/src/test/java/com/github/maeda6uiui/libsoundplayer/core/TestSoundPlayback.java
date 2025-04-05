@@ -2,7 +2,7 @@ package com.github.maeda6uiui.libsoundplayer.core;
 
 import java.io.FileNotFoundException;
 
-public class TestSound {
+public class TestSoundPlayback {
     public static void main(String[] args) {
         Sound sound;
         try {
