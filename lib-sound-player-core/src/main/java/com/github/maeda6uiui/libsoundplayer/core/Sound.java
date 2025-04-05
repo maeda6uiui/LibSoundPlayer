@@ -56,6 +56,13 @@ public class Sound {
         return resp.equals("true");
     }
 
+    public boolean isPaused() {
+        String resp = ISoundPlayer.INSTANCE.send_command_to_sound_player(playerId, "is_paused");
+        this.throwExceptionOnError(resp);
+
+        return resp.equals("true");
+    }
+
     public float getSpeed() {
         String resp = ISoundPlayer.INSTANCE.send_command_to_sound_player(playerId, "get_speed");
         this.throwExceptionOnError(resp);

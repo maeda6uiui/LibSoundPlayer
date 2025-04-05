@@ -65,6 +65,14 @@ impl SoundPlayer {
         }
     }
 
+    fn is_paused(&self) -> String {
+        if self.sink.is_paused() {
+            "true".to_string()
+        } else {
+            "false".to_string()
+        }
+    }
+
     fn get_speed(&self) -> String {
         format!("{}", self.sink.speed())
     }
@@ -174,6 +182,10 @@ pub extern "C" fn spawn_sound_player_thread(c_input_filepath: *const c_char) -> 
                     "pause" => player.pause(),
                     "is_finished" => {
                         let resp = player.is_finished();
+                        send_response(&response_sender, &resp);
+                    }
+                    "is_paused" => {
+                        let resp = player.is_paused();
                         send_response(&response_sender, &resp);
                     }
                     "get_speed" => {
