@@ -69,7 +69,7 @@ impl SoundPlayer {
         format!("{}", self.sink.speed())
     }
 
-    fn set_speed(&self, args: &[&str]) -> Result<(), Box<dyn Error>> {
+    fn try_set_speed(&self, args: &[&str]) -> Result<(), Box<dyn Error>> {
         if args.len() != 2 {
             return Err(RuntimeError {
                 msg: format!("Invalid number of arguments: {}", args.len()),
@@ -86,7 +86,7 @@ impl SoundPlayer {
         format!("{}", self.sink.volume())
     }
 
-    fn set_volume(&self, args: &[&str]) -> Result<(), Box<dyn Error>> {
+    fn try_set_volume(&self, args: &[&str]) -> Result<(), Box<dyn Error>> {
         if args.len() != 2 {
             return Err(RuntimeError {
                 msg: format!("Invalid number of arguments: {}", args.len()),
@@ -167,12 +167,12 @@ pub extern "C" fn spawn_sound_player_thread(c_input_filepath: *const c_char) -> 
                         send_response(&response_sender, &resp);
                     }
                     "set_speed" => {
-                        if let Err(e) = player.set_speed(&args) {
+                        if let Err(e) = player.try_set_speed(&args) {
                             log::error!("{}", e);
                         }
                     }
                     "set_volume" => {
-                        if let Err(e) = player.set_volume(&args) {
+                        if let Err(e) = player.try_set_volume(&args) {
                             log::error!("{}", e);
                         }
                     }
