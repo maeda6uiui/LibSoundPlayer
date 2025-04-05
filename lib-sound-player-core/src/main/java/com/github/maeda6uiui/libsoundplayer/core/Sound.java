@@ -31,11 +31,19 @@ public class Sound {
         this.throwExceptionOnError(resp);
     }
 
+    /**
+     * Stops the sound.
+     * Note that methods in this class cannot be called after the sound is stopped.
+     */
     public void stop() {
         String resp = ISoundPlayer.INSTANCE.send_command_to_sound_player(playerId, "stop");
         this.throwExceptionOnError(resp);
     }
 
+    /**
+     * Pauses playback of this sound.
+     * A paused sound can be resumed with {@link #play()}.
+     */
     public void pause() {
         String resp = ISoundPlayer.INSTANCE.send_command_to_sound_player(playerId, "pause");
         this.throwExceptionOnError(resp);
