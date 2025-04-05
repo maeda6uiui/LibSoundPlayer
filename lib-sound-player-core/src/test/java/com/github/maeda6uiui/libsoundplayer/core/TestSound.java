@@ -37,4 +37,9 @@ public class TestSound {
         sound.setVolume(1.5f);
         assertEquals(1.5f, sound.getVolume());
     }
+
+    @Test
+    public void testGetPos() {
+        assertEquals(0, sound.getPos());
+    }
 }
