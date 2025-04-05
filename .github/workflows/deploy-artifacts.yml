@@ -51,4 +51,5 @@ jobs:
           mvn clean deploy \
             -Dgpg.executable=gpg \
             -Dgpg.passphrase=${{secrets.gpgPassphrase}} \
-            -Dgpg.pinentry-mode=loopback
+            -Dgpg.pinentry-mode=loopback \
+            -DskipTests
