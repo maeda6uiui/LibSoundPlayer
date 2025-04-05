@@ -194,6 +194,15 @@ pub extern "C" fn spawn_sound_player_thread(c_input_filepath: *const c_char) -> 
                             log::error!("{}", e);
                         }
                     }
+                    "get_pos"=>{
+                        let resp=player.get_pos();
+                        send_response(&response_sender,&resp);
+                    }
+                    "seek"=>{
+                        if let Err(e)=player.try_seek(&args){
+                            log::error!("{}",e);
+                        }
+                    }
                     _ => {
                         log::warn!("Unknown command: {}", command);
                     }
@@ -261,7 +270,7 @@ pub extern "C" fn send_command_to_sound_player(
         return convert_string_to_c_char_ptr(&ret);
     }
 
-    let commands_with_response: HashSet<&str> = vec!["is_finished", "get_speed", "get_volume"]
+    let commands_with_response: HashSet<&str> = vec!["is_finished", "get_speed", "get_volume","get_pos"]
         .into_iter()
         .collect();
     if commands_with_response.contains(command.as_str()) {
