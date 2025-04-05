@@ -18,9 +18,10 @@ public class TestSoundPlayback {
             if (sound.isFinished()) {
                 break;
             }
+            System.out.printf("%f s\n", sound.getPos() / 1000.0);
 
             try {
-                Thread.sleep(100);
+                Thread.sleep(1000);
             } catch (InterruptedException e) {
                 System.err.println(e);
                 break;
