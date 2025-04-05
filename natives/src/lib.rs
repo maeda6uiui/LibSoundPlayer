@@ -282,10 +282,15 @@ pub extern "C" fn send_command_to_sound_player(
         return convert_string_to_c_char_ptr(&ret);
     }
 
-    let commands_with_response: HashSet<&str> =
-        vec!["is_finished", "get_speed", "get_volume", "get_pos"]
-            .into_iter()
-            .collect();
+    let commands_with_response: HashSet<&str> = vec![
+        "is_finished",
+        "is_paused",
+        "get_speed",
+        "get_volume",
+        "get_pos",
+    ]
+    .into_iter()
+    .collect();
     if commands_with_response.contains(command.as_str()) {
         PLAYER_RESPONSE_RECEIVERS.with(|m| {
             if let Some(receiver) = m.borrow().get(&id) {
