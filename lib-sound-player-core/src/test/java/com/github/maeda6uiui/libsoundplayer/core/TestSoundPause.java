@@ -21,12 +21,15 @@ public class TestSoundPause {
         }
 
         sound.play();
+        System.out.printf("isPaused: %b\n", sound.isPaused());
         sleep(10000);
 
         sound.pause();
+        System.out.printf("isPaused: %b\n", sound.isPaused());
         sleep(3000);
 
         sound.play();
+        System.out.printf("isPaused: %b\n", sound.isPaused());
         sleep(10000);
 
         sound.stop();
