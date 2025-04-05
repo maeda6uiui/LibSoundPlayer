@@ -71,4 +71,26 @@ public class Sound {
         String resp = ISoundPlayer.INSTANCE.send_command_to_sound_player(playerId, String.format("set_volume %f", volume));
         this.throwExceptionOnError(resp);
     }
+
+    /**
+     * Returns the position of the sound in millisecond.
+     *
+     * @return Position of the sound in millisecond
+     */
+    public int getPos() {
+        String resp = ISoundPlayer.INSTANCE.send_command_to_sound_player(playerId, "get_pos");
+        this.throwExceptionOnError(resp);
+
+        return Integer.parseInt(resp);
+    }
+
+    /**
+     * Attempts to seek to a given position.
+     *
+     * @param pos Position in millisecond
+     */
+    public void seek(int pos) {
+        String resp = ISoundPlayer.INSTANCE.send_command_to_sound_player(playerId, String.format("seek %d", pos));
+        this.throwExceptionOnError(resp);
+    }
 }
