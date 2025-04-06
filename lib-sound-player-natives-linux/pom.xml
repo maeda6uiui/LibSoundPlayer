@@ -6,7 +6,7 @@
     <parent>
         <groupId>com.github.dabasan</groupId>
         <artifactId>lib-sound-player</artifactId>
-        <version>0.0.1-SNAPSHOT</version>
+        <version>0.0.1</version>
     </parent>
 
     <artifactId>lib-sound-player-natives-linux</artifactId>

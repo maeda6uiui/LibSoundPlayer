@@ -6,7 +6,7 @@
 
     <groupId>com.github.dabasan</groupId>
     <artifactId>lib-sound-player</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.0.1</version>
     <packaging>pom</packaging>
     <name>LibSoundPlayer</name>
     <description>Sound player library</description>
