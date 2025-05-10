@@ -17,9 +17,9 @@ Core part is written in Rust, using [rodio](https://github.com/RustAudio/rodio).
 
 ```xml
 <dependency>
-    <groupId>com.github.dabasan</groupId>
+    <groupId>io.github.maeda6uiui</groupId>
     <artifactId>lib-sound-player-core</artifactId>
-    <version>0.0.1</version>
+    <version>0.0.2</version>
 </dependency>
 ```
 
