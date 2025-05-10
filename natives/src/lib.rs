@@ -3,7 +3,6 @@ use std::{
     collections::{HashMap, HashSet},
     error::Error,
     ffi::{CStr, CString, c_char},
-    fmt::{self},
     fs::File,
     io::BufReader,
     str::FromStr,
@@ -15,6 +14,7 @@ use std::{
     time::Duration,
 };
 
+use anyhow::anyhow;
 use rodio::{Decoder, OutputStream, Sink};
 use uuid::Uuid;
 
@@ -25,19 +25,6 @@ thread_local! {
 }
 
 static INIT: Once = Once::new();
-
-#[derive(Debug, Clone)]
-struct RuntimeError {
-    msg: String,
-}
-
-impl fmt::Display for RuntimeError {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "{}", &self.msg)
-    }
-}
-
-impl Error for RuntimeError {}
 
 struct SoundPlayer {
     _stream: OutputStream,
@@ -79,10 +66,7 @@ impl SoundPlayer {
 
     fn try_set_speed(&self, args: &[&str]) -> Result<(), Box<dyn Error>> {
         if args.len() != 2 {
-            return Err(RuntimeError {
-                msg: format!("Invalid number of arguments: {}", args.len()),
-            }
-            .into());
+            return Err(anyhow!("Invalid number of arguments: {}", args.len()).into());
         }
 
         let v: f32 = args[1].parse()?;
@@ -96,10 +80,7 @@ impl SoundPlayer {
 
     fn try_set_volume(&self, args: &[&str]) -> Result<(), Box<dyn Error>> {
         if args.len() != 2 {
-            return Err(RuntimeError {
-                msg: format!("Invalid number of arguments: {}", args.len()),
-            }
-            .into());
+            return Err(anyhow!("Invalid number of arguments: {}", args.len()).into());
         }
 
         let v: f32 = args[1].parse()?;
@@ -109,10 +90,7 @@ impl SoundPlayer {
 
     fn try_seek(&self, args: &[&str]) -> Result<(), Box<dyn Error>> {
         if args.len() != 2 {
-            return Err(RuntimeError {
-                msg: format!("Invalid number of arguments: {}", args.len()),
-            }
-            .into());
+            return Err(anyhow!("Invalid number of arguments: {}", args.len()).into());
         }
 
         let v: u64 = args[1].parse()?;
