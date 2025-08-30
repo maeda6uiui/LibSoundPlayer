@@ -1,4 +1,10 @@
+<!-- @formatter:off -->
+
 # LibSoundPlayer
+
+> [!NOTE]
+> LibSoundPlayer is now part of the [Mechtatel](https://github.com/maeda6uiui/Mechtatel) project.
+> Check mechtatel-audio module and its test code for usage.
 
 ## Overview
 
